@@ -1,0 +1,42 @@
+name: Linux-only Manual Release
+
+# Manually triggered, single-platform (Linux x86_64) build that reuses the
+# existing build-template.yml reusable workflow, restricted to just the
+# "Linux release" matrix entry, on a standard GitHub-hosted runner.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    uses: ./.github/workflows/build-template.yml
+    with:
+      config: '[{"name": "Linux release (manual)", "os": "ubuntu-latest", "release": true, "test": true, "shell": "nix develop .#oldGlibc -c bash -euxo pipefail {0}", "llvm-url": "https://github.com/leanprover/lean-llvm/releases/download/22.1.4/lean-llvm-x86_64-linux-gnu.tar.zst", "prepare-llvm": "../script/prepare-llvm-linux.sh lean-llvm*", "binary-check": "ldd -v", "CMAKE_OPTIONS": "-DLEAN_EXTRA_CXX_FLAGS=-Werror"}]'
+      nightly: ""
+      LEAN_VERSION_MAJOR: ""
+      LEAN_VERSION_MINOR: ""
+      LEAN_VERSION_PATCH: ""
+      LEAN_SPECIAL_VERSION_DESC: ""
+      RELEASE_TAG: ""
+    secrets: inherit
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          path: artifacts
+      - name: Release
+        uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3.0.1
+        with:
+          tag_name: manual-linux-${{ github.run_number }}
+          files: artifacts/*/*
+          fail_on_unmatched_files: true
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
