@@ -13,7 +13,7 @@ jobs:
   build:
     uses: ./.github/workflows/build-template.yml
     with:
-      config: '[{"name": "Linux release (manual)", "os": "ubuntu-latest", "release": true, "test": true, "shell": "nix develop .#oldGlibc -c bash -euxo pipefail {0}", "llvm-url": "https://github.com/leanprover/lean-llvm/releases/download/22.1.4/lean-llvm-x86_64-linux-gnu.tar.zst", "prepare-llvm": "../script/prepare-llvm-linux.sh lean-llvm*", "binary-check": "ldd -v", "CMAKE_OPTIONS": "-DLEAN_EXTRA_CXX_FLAGS=-Werror"}]'
+      config: '[{"name": "linux-release-manual", "os": "ubuntu-latest", "release": true, "test": true, "shell": "nix develop .#oldGlibc -c bash -euxo pipefail {0}", "llvm-url": "https://github.com/leanprover/lean-llvm/releases/download/22.1.4/lean-llvm-x86_64-linux-gnu.tar.zst", "prepare-llvm": "../script/prepare-llvm-linux.sh lean-llvm*", "binary-check": "ldd -v", "CMAKE_OPTIONS": "-DLEAN_EXTRA_CXX_FLAGS=-Werror"}]'
       nightly: ""
       LEAN_VERSION_MAJOR: ""
       LEAN_VERSION_MINOR: ""
