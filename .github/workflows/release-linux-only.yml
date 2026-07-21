@@ -30,12 +30,13 @@ jobs:
     steps:
       - uses: actions/download-artifact@v8
         with:
+          name: build-linux-release-manual
           path: artifacts
       - name: Release
         uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3.0.1
         with:
           tag_name: manual-linux-${{ github.run_number }}
-          files: artifacts/*/*
+          files: artifacts/**
           fail_on_unmatched_files: true
           prerelease: true
         env:
